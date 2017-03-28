@@ -61,6 +61,48 @@ SSH port: 2200
 	* Activate the virtual environment by `$ source venv/bin/activate`.
 	* Change the permission of the virtual environment folder `$ sudo chmod -R 777 venv`.
 	* Install all the required modules including Flask, httplib2, requests, oauth2client, sqlalchemy and psycopg2.
+13. **Configure and enable a new virtual host**
+	* Create a virtual host config file `$ sudo nano /etc/apache2/sites-available/itemCatalog.conf`.
+	* Paste the following code:
+	  ```
+      <VirtualHost *:80>
+          ServerName 107.21.43.58
+          ServerAlias http://ec2-107-21-43-58.compute-1.amazonaws.com
+          ServerAdmin admin@107.21.43.58
+          WSGIDaemonProcess itemCatalog python-path=/var/www/catalog:/var/www/itemCatalog/venv/lib/python2.7/site-packages
+          WSGIProcessGroup itemCatalog
+          WSGIScriptAlias / /var/www/itemCatalog/itemCatalog.wsgi
+          <Directory /var/www/itemCatalog/itemCatalog/>
+              Order allow,deny
+              Allow from all
+          </Directory>
+          Alias /static /var/www/itemCatalog/itemCatalog/static
+          <Directory /var/www/itemCatalog/itemCatalog/static/>
+              Order allow,deny
+              Allow from all
+          </Directory>
+          ErrorLog ${APACHE_LOG_DIR}/error.log
+          LogLevel warn
+          CustomLog ${APACHE_LOG_DIR}/access.log combined
+      </VirtualHost>
+      ```
+     * Enable the new virtual host `$ sudo a2ensite itemCatalog`.
+14. **Install and configure PostgreSQL**
+	* `$ sudo apt-get install postgresql`.
+	* There is an automatically created user for PostgreSQL called *postgres". You can use it to login the SQL by `$ sudo su - postgres` and then `$ psql`.
+	* Create a new user `# CREATE USER itemcatalog WITH PASSWORD 'password';`
+	* Give *itemcatalog* the CREATEDB capability: `# ALTER USER itemcatalog CREATEDB;`
+	* Create a database *itemcatalog* owned by user *itemcatalog*: `# CREATE DATABASE itemcatalog WITH OWNER catalog;`
+	* Connect to the database `# \c itemcatalog`.
+	* Revoke all rights: `# REVOKE ALL ON SCHEMA public FROM public;`
+	* Let only *itemcatalog* create tables: `# GRANT ALL ON SCHEMA public TO itemcatalog;`
+	* Log out from PostgreSQL: `# \q` and then return to the terminal: `$ exit`.
+	* The database in the Flask app would now be connected by 
+		
+        `engine = create_engine('postgresql://itemcatalog:password@localhost/itemcatalog')`
+    * Setup the database and fill them with some examples by `$ python database_setup.py` and then `$ python lotsofitems.py`
+    * Restart the apache server to serve the web application `$ sudo service apache2 restart`.
+
 
 	
     
