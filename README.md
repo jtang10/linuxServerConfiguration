@@ -101,7 +101,8 @@ SSH port: 2200
 		
         `engine = create_engine('postgresql://itemcatalog:password@localhost/itemcatalog')`
     * Setup the database and fill them with some examples by `$ python database_setup.py` and then `$ python lotsofitems.py`
-    * Restart the apache server to serve the web application `$ sudo service apache2 restart`.
+    
+15. Restart the apache server to serve the web application `$ sudo service apache2 restart`.
 
 
 	
