@@ -101,8 +101,10 @@ SSH port: 2200
 		
         `engine = create_engine('postgresql://itemcatalog:password@localhost/itemcatalog')`
     * Setup the database and fill them with some examples by `$ python database_setup.py` and then `$ python lotsofitems.py`
-    
-15. Restart the apache server to serve the web application `$ sudo service apache2 restart`.
+
+15. **Fix the Oauth for Google and Facebook Login**. Change all the client_secrets.json files to their absolute path in order to let program get them. Also, follow [swooding's post](https://discussions.udacity.com/t/issues-with-facebook-oauth-access-token/233840) to fix the Facebook login issue due to Graph API update.
+
+16. Restart the apache server to serve the web application `$ sudo service apache2 restart`.
 
 
 	
